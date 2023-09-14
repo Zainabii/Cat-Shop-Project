@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Selling Cats</title>
+  <style>
+    /* CSS styles */
+    body {
+      background-color: #F9E5D8; /* Light peach color */
+      color: #333; /* Dark text color */
+      font-family: Arial, sans-serif;
+    }
+    
+    h1, h2 {
+      color: #FF6F61; /* Coral color */
+    }
+  
+  
+    img {
+      width: 200px; /* Adjust the width as desired */
+      height: auto; /* Maintain aspect ratio */
+    }
+    
+    .cat-item {
+      float: left;
+      width: 25%;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .cat-item img {
+      width: 100%;
+      height: 200px; /* Adjust the height as desired */
+      object-fit: cover;
+    }
+    
+    .cat-item p {
+      margin-top: 10px;
+    }
+    
+    .clearfix::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+ 
+    .cat-image {
+      max-width: 300px;
+      transition: transform 0.3s; /* Add a smooth transition effect */
+      cursor: pointer;
+    }
+
+    .cat-image:hover {
+      transform: scale(1.1); /* Scale the image on hover */
+    }
+
+    .modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    overflow: auto;
+  }
+
+  .modal-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .modal img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+    #shopName {
+      font-size: 60px;
+      margin-top: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .cat-items {
+    display: flex;
+  }
+
+  .cat-item {
+    position: relative;
+    flex: 0 0 33.33%;
+    max-width: 33.33%;
+    overflow: hidden;
+    transition: z-index 0.3s;
+  }
+
+  .cat-item img {
+    transition: transform 0.3s;
+  }
+
+  .cat-item:hover {
+    z-index: 1;
+  }
+
+  .cat-item:hover img {
+    transform: scale(1.2);
+  }
+    
+    .details {
+      display: none;
+    }
+    /* CSS styles */
+    /* ...existing styles... */
+    
+    /* New styles for search button */
+    .search-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #FF6F61;
+      color: #FFF;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+  
+  #pawImage {
+    cursor: pointer;
+  }
+  .cat-item button {
+  background-color: #FF6F61; /* Darker shade of red */
+  color: #FFFFFF;
+}
+
+.cat-item button:hover {
+  background-color: #b65550; /* Even darker shade of red */
+}
+
+   /* CSS animation */
+   @keyframes moveAndPulsate {
+      0% {
+        transform: scale(1) translateX(0);
+      }
+      50% {
+        transform: scale(1.2) translateX(10px);
+      }
+      100% {
+        transform: scale(1) translateX(0);
+      }
+    }
+    
+    /* Hover effect */
+    #shopName:hover {
+      color: #b65550; /* Darker shade of red */
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      animation: moveAndPulsate 2s infinite;
+    }
+  /* CSS animation */
+    @keyframes flip {
+      0% {
+        transform: perspective(800px) rotateY(0);
+      }
+      50% {
+        transform: perspective(800px) rotateY(180deg);
+      }
+      100% {
+        transform: perspective(800px) rotateY(0);
+      }
+    }
+    
+    /* Hover effect */
+    #shopName {
+      display: inline-block;
+      transition: transform 0.5s;
+    }
+
+    .social-media {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .social-media a {
+    display: inline-block;
+    margin: 0 10px;
+  }
+
+  .social-media img {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .testimonial {
+      background-color: #e27d73; /* Replace "your-color" with your desired color value */
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .testimonial:hover {
+      transform: translateY(-5px);
+    }
+
+    .testimonial .quote {
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+
+    .testimonial .author {
+      font-weight: bold;
+    }
+
+    .testimonial .author:before {
+      content: "- ";
+    }
+
+    .testimonial-title {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+  </style>
+  
+</head>
+  
+  <!-- Add the search button -->
+  <button class="search-button" onclick="searchCat()">Search Cat</button>
+  
+  <!-- ...existing HTML content... -->
+  
+  <script>
+    // JavaScript code
+    // ...existing scripts...
+    
+    // Sample cat data with names
+    var cats = [
+      { name: "Black Shorthair", breed: "Shorthair" },
+      { name: "Persian", breed: "Persian" },
+      { name: "Siamese", breed: "Siamese" },
+      { name: "Maine Coon", breed: "Maine Coon" },
+      { name: "Ragdoll", breed: "Ragdoll" },
+      { name: "Bengal", breed: "Bengal" },
+      { name: "Mohair", breed: "Mohair" }
+    ];
+    
+    function searchCat() {
+      // Retrieve the search criteria from the user
+      var searchName = prompt("Enter the cat name:");
+      
+      // Perform the search based on the name
+      if (searchName) {
+        // Convert the searchName to lowercase for case-insensitive search
+        searchName = searchName.toLowerCase();
+        
+        // Search for cats matching the name
+        var matchingCats = cats.filter(function(cat) {
+          return cat.name.toLowerCase().indexOf(searchName) !== -1;
+        });
+        
+        // Display the matching cats
+        if (matchingCats.length > 0) {
+          var catNames = matchingCats.map(function(cat) {
+            return cat.name;
+          });
+          alert("Found cat(s) with name '" + searchName + "': " + catNames.join(", "));
+        } else {
+          alert("No cats found with name '" + searchName + "'.");
+        }
+      }
+    }
+
+    
+  </script>
+  <script>
+    // JavaScript code
+    function showDetails(button) {
+      var catItem = button.closest('.cat-item');
+      var details = catItem.querySelector('.details');
+      
+      if (details.style.display === 'none') {
+        details.style.display = 'block';
+        button.textContent = 'Hide Details';
+      } else {
+        details.style.display = 'none';
+        button.textContent = 'Show Details';
+      }
+    }
+  </script> 
+  <script>
+    // JavaScript code
+    function openModal(imageSrc) {
+      var modal = document.getElementById("modal");
+      var modalImage = document.getElementById("modalImage");
+
+      modalImage.src = imageSrc;
+      modal.style.display = "block";
+    }
+
+    function closeModal() {
+      var modal = document.getElementById("modal");
+      modal.style.display = "none";
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+  var pawImage = document.getElementById('pawImage');
+  var purrSound = document.getElementById('purrSound');
+  
+  pawImage.addEventListener('click', function() {
+    purrSound.play();
+  });
+});
+
+
+  </script>
+  
+
+  <h1>Welcome to <span id="shopName">Purrfect Paws</span> Cat Shop! 
+    <img id="pawImage" src="PawImage.png" alt="Orange Paw" style="width: 30px; vertical-align: middle;">
+  </h1>
+  <audio id="purrSound">
+    <source src="cat-purring-68797.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  
+  
+  <h2>Available Cats:</h2>
+  <div class="clearfix">
+    <div class="cat-item">
+      <img src="image1.jpg" alt="Black Shorthair"onclick="openModal('image1.jpg')">
+      <p>Black Shorthair - $200</p>
+      <button onclick="window.open('order_form.html', '_blank')">Buy Now</button>
+      <button onclick="showDetails(this)">Show Details</button>
+      <div class="details hidden">
+        <p>The Black Shorthair is a sleek and elegant breed known for its short, dense coat that is predominantly black. They have a friendly and affectionate nature, making them great companions. Black Shorthairs are generally low-maintenance cats and are known for their adaptability to various living situations.</p>
+      </div>
+    </div>
+    <div class="cat-item">
+      <img src="image2.jpg" alt="Siamese"onclick="openModal('image2.jpg')">
+      <p>Siamese - $300</p>
+      <button onclick="window.open('order_form.html', '_blank')">Buy Now</button>
+      <button onclick="showDetails(this)">Show Details</button>
+      <div class="details hidden">
+        <p>The Siamese breed is recognized for its striking blue almond-shaped eyes and distinctive color points on its ears, face, paws, and tail. They are known for their intelligence, curiosity, and social nature. Siamese cats are often vocal and enjoy interacting with their owners. They require regular mental and physical stimulation.</p>
+      </div>
+    </div>
+    <div class="cat-item">
+      <img src="image3.jpg" alt="Persian" onclick="openModal('image3.jpg')">
+      <p>Persian - $400</p>
+      <button onclick="window.open('order_form.html', '_blank')">Buy Now</button>
+      <button onclick="showDetails(this)">Show Details</button>
+      <div class="details hidden">
+        <p>Persian cats are characterized by their long, luxurious coats, round faces, and gentle demeanor. They have a calm and placid temperament, making them ideal indoor companions. Persian cats require regular grooming to maintain their coat's health and appearance.</p>
+      </div>
+
+    </div>
+    <div class="cat-item">
+      <img src="image4.jpg" alt="Maine Coon" onclick="openModal('image4.jpg')">
+      <p>Maine Coon - $500</p>
+      <button onclick="window.open('order_form.html', '_blank')">Buy Now</button>
+      <button onclick="showDetails(this)">Show Details</button>
+      <div class="details hidden">
+        <p>Maine Coons are one of the largest domestic cat breeds, known for their impressive size and tufted ears. They have a friendly and outgoing personality and are often referred to as "gentle giants." Maine Coons have thick, water-repellent fur, making them well-suited to colder climates.</p>
+      </div>
+    </div>
+    <div class="cat-item">
+      <img src="image5.jpg" alt="Ragdoll" onclick="openModal('image5.jpg')">
+      <p>Ragdoll - $350</p>
+      <button onclick="window.open('order_form.html', '_blank')">Buy Now</button>
+      <button onclick="showDetails(this)">Show Details</button>
+      <div class="details hidden">
+        <p>Ragdoll cats are known for their docile and relaxed nature, often going limp when picked up, hence the name "Ragdoll." They have stunning blue eyes and soft, semi-longhair coats that come in various patterns and colors. Ragdolls are typically affectionate and enjoy being around people.</p>
+      </div>
+    </div>
+    <div class="cat-item">
+      <img src="image6.jpg" alt="Bengal" onclick="openModal('image6.jpg')">
+      <p>Bengal - $450</p>
+      <button onclick="window.open('order_form.html', '_blank')">Buy Now</button>
+      <button onclick="showDetails(this)">Show Details</button>
+      <div class="details hidden">
+        <p>The Bengal breed is known for its striking appearance, resembling a miniature leopard. They have a distinctive spotted or marbled coat that comes in various colors, including brown, silver, and snow. Bengals are energetic, intelligent, and require plenty of mental and physical stimulation.</p>
+      </div>
+    </div>
+    <div class="cat-item">
+      <img src="image7 .jpg" alt="Mohair" onclick="openModal('image7 .jpg')">
+      <p>Mohair - Free</p>
+      <button onclick="window.open('order_form.html', '_blank')">Claim Now</button>
+      <button onclick="showDetails(this)">Show Details</button>
+      <div class="details hidden">
+        <p>Meet Mohair,the mischievous white cat with brown polka dots, turns your home into a chaos-filled playground. Get ready for laughter and mischief with this naughty feline. Brace yourself for his occasional "aroma enhancements"!.</p>
+      </div>
+    </div>
+  </div>
+  <div id="modal" class="modal" onclick="closeModal()">
+    <img id="modalImage" class="modal-content" src="" alt="Modal Image">
+  </div>
+</div>
+<br>
+<br>
+  <h2>Cat Supplies:</h2>
+  <div id="catSupplies" class="clearfix">
+    <!-- Add cat supply items here -->
+
+<!-- Cat supply item 1 -->
+<div class="cat-item">
+  <img src="cat_item1.png" alt="Cat Food 2" onclick="openModal('cat_item1.png')">
+  <p>Grain-Free Dry Cat Food - $18</p>
+  <button>Buy Now</button>
+  <button onclick="showDetails(this)">Show Details</button>
+  <div class="details hidden">
+    <p>This grain-free dry cat food is perfect for cats with food sensitivities or allergies. It is made with real meat as the main ingredient and does not contain any artificial additives. The formula provides a balanced diet and supports healthy digestion for your feline friend.</p>
+  </div>
+</div>
+
+
+<!-- Cat supply item 2 -->
+<div class="cat-item">
+  <img src="cat_item2.png" alt="Cat Litter 1" onclick="openModal('cat_item2.png')">
+  <p>Clumping Cat Litter - $8</p>
+  <button>Buy Now</button>
+  <button onclick="showDetails(this)">Show Details</button>
+  <div class="details hidden">
+    <p>This clumping cat litter is highly absorbent and helps to control odors in your cat's litter box. It forms tight clumps for easy scooping and cleaning. The litter is dust-free and gentle on your cat's paws, providing them with a comfortable and clean environment.</p>
+  </div>
+</div>
+
+<!-- Cat supply item 3 -->
+<div class="cat-item">
+  <img src="cat_item4.png" alt="Cat Bed 1" onclick="openModal('cat_item4.png')">
+  <p>Cozy Cat Bed - $25</p>
+  <button>Buy Now</button>
+  <button onclick="showDetails(this)">Show Details</button>
+  <div class="details hidden">
+    <p>This cozy cat bed offers a soft and warm spot for your cat to curl up and relax. It is made of plush materials and features a padded cushion for extra comfort. The bed is machine washable, making it easy to keep clean and fresh for your furry companion.</p>
+  </div>
+</div>
+
+<!-- Cat supply item 4 -->
+<div class="cat-item">
+  <img src="Cat_item3.png" alt="Cat Treats" onclick="openModal('Cat_item3.png')">
+  <p>Irresistible Cat Treats - $5</p>
+  <button>Buy Now</button>
+  <button onclick="showDetails(this)">Show Details</button>
+  <div class="details hidden">
+    <p>Reward your cat with these delicious and nutritious cat treats. Made with high-quality ingredients, these treats are packed with flavor that will leave your cat wanting more. They are suitable for all cat breeds and sizes.</p>
+  </div>
+</div>
+</div>
+<br>
+<br>
+<h2>Contact Information:</h2>
+<p>
+  For inquiries or to purchase a cat, please contact us at:
+  <br>
+  Email: catsales@example.com
+  <br>
+  Phone: 00-01440423
+</p>
+
+<h2>About Us:</h2>
+<p>
+  We are passionate about cats and strive to provide healthy and well-socialized felines to loving homes. Our cats are raised in a nurturing environment, ensuring their happiness and well-being. Visit our shop today and find your purrfect companion!
+</p>
+
+<h2 class="testimonial-title">Customer Reviews</h2>
+
+<div class="testimonial">
+  <p class="quote">"I love the cat products on this website. They have a great selection and excellent quality!"</p>
+  <p class="author">Zainab</p>
+</div>
+
+<div class="testimonial">
+  <p class="quote">"The customer service is outstanding. They answered all my questions and provided helpful recommendations."</p>
+  <p class="author">Saeed</p>
+</div>
+
+
+
+<head>
+  <title>Interactive Cat Quiz</title>
+  <style>
+    .quiz-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      max-width: 400px;
+      display: none;
+    }
+
+    .quiz-container.show {
+      display: block;
+    }
+
+    .quiz-container h2 {
+      margin-top: 0;
+    }
+
+    .quiz-container button {
+      display: block;
+      margin: 10px 0;
+    }
+
+    .start-quiz-button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #c95b51;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .start-quiz-button:hover {
+      background-color: b65550;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quizContainer">
+    <h2 id="question"></h2>
+    <div id="options"></div>
+  </div>
+
+  <button class="start-quiz-button" onclick="toggleQuizContainer()">Start Quiz</button>
+
+  <script>
+    const quizQuestions = [
+      {
+        question: "Which cat breed is known for its lack of tail?",
+        options: ["Siamese", "Maine Coon", "Manx", "Persian"],
+        answer: "Manx"
+      },
+      {
+        question: "What is the average lifespan of a domestic cat?",
+        options: ["8-10 years", "10-15 years", "15-20 years", "20-25 years"],
+        answer: "10-15 years"
+      },
+      {
+        question: "Which cat breed has a reputation for being hairless?",
+        options: ["Sphynx", "Bengal", "Ragdoll", "Scottish Fold"],
+        answer: "Sphynx"
+      },
+      {
+        question: "What is the largest domestic cat breed?",
+        options: ["Maine Coon", "Savannah", "Ragdoll", "Persian"],
+        answer: "Maine Coon"
+      },
+      {
+        question: "What is a group of cats called?",
+        options: ["Flock", "Herd", "Clowder", "Pack"],
+        answer: "Clowder"
+      }
+      // Add more questions and answers as needed
+    ];
+
+    let currentQuestionIndex = 0;
+
+    function displayQuestion(questionObj) {
+      const questionElement = document.getElementById("question");
+      questionElement.textContent = questionObj.question;
+
+      const optionsElement = document.getElementById("options");
+      optionsElement.innerHTML = "";
+
+      questionObj.options.forEach((option) => {
+        const optionElement = document.createElement("button");
+        optionElement.textContent = option;
+        optionElement.addEventListener("click", () => checkAnswer(option, questionObj.answer));
+        optionsElement.appendChild(optionElement);
+      });
+    }
+
+    function checkAnswer(userAnswer, correctAnswer) {
+      if (userAnswer === correctAnswer) {
+        alert("Correct answer!");
+      } else {
+        alert("Incorrect answer!");
+      }
+
+      currentQuestionIndex++;
+      if (currentQuestionIndex < quizQuestions.length) {
+        displayQuestion(quizQuestions[currentQuestionIndex]);
+      } else {
+        alert("Quiz completed!");
+        document.getElementById("quizContainer").classList.remove("show");
+      }
+    }
+
+    function toggleQuizContainer() {
+      const quizContainer = document.getElementById("quizContainer");
+      quizContainer.classList.toggle("show");
+      if (quizContainer.classList.contains("show")) {
+        displayQuestion(quizQuestions[currentQuestionIndex]);
+      }
+    }
+  </script>
+<br>
+<br>
+
+  <!-- Add the following HTML code after the "About Us" section -->
+<h2>Connect with Us:</h2>
+<div class="social-media">
+  <a href="https://www.facebook.com/your-page" target="_blank">
+    <img src="facebook.png" alt="Facebook">
+  </a>
+  <a href="https://www.instagram.com/your-page" target="_blank">
+    <img src="instagram.png" alt="Instagram">
+  </a>
+  <a href="https://twitter.com/Zainab14940160" target="_blank">
+    <img src="twitter.png" alt="Twitter">
+  </a>
+  <a href="https://github.com/Zainabii" target="_blank">
+    <img src="github.png" alt="GitHub">
+  </a>
+</div>
+</body>
+</html>
